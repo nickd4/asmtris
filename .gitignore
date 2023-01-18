@@ -4,3 +4,6 @@
 *.lst
 *.rel
 *.rst
+/a
+/b
+/diff

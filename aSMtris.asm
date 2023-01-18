@@ -31,7 +31,11 @@
 ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-.186 ; uses shl r/m,immediate
+;.186 ; uses shl r/m,immediate
+
+.386 ; binary uses conditional jmp near
+.addr16
+.oper16
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; COM programs are required to have their origin at CS:0x0100
@@ -1287,7 +1291,7 @@ handle_input:
     ; check whether left was pressed
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     cmp al, 'a
-    je move_left
+    je short move_left ; asx86 3-pass assembler doesn't detect short jmp
     
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; check whether rotate was pressed
