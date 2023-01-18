@@ -31,12 +31,11 @@
 ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-.186 ; uses shl r/m,immediate
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ; COM programs are required to have their origin at CS:0x0100
+    ; COM programs are required to have their origin at CS:0100h
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ;org 0x100
+    org 100h
     
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; jump over data section
@@ -57,21 +56,21 @@
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; strings that will be displayed
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    msg_author: .ascii "Written by Sebastian Mihai, 2014$"
-    msg_next: .ascii "Next$"
-    msg_left: .ascii "A - Left$"
-    msg_right: .ascii "S - Right$"
-    msg_rotate: .ascii "SPC - Rotate$"
-    msg_quit: .ascii "Q - Quit$"
-    msg_lines: .ascii "Lines$"
-    msg_game_over: .ascii "Game Over$"
-    msg_asmtris: .ascii "aSMtris$"
+    msg_author db "Written by Sebastian Mihai, 2014$"
+    msg_next db "Next$"
+    msg_left db "A - Left$"
+    msg_right db "S - Right$"
+    msg_rotate db "SPC - Rotate$"
+    msg_quit db "Q - Quit$"
+    msg_lines db "Lines$"
+    msg_game_over db "Game Over$"
+    msg_asmtris db "aSMtris$"
 
-    delay_centiseconds: .db 5 ; delay between frames in hundredths of a second
-    screen_width: .dw 320
+    delay_centiseconds db 5 ; delay between frames in hundredths of a second
+    screen_width dw 320
     
-    block_size: .dw 5 ; block size in pixels
-    blocks_per_piece: .dw 4 ; number of blocks in a piece
+    block_size dw 5 ; block size in pixels
+    blocks_per_piece dw 4 ; number of blocks in a piece
     
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; the reason why pieces change colour is to facilitate collision detection
@@ -79,9 +78,9 @@
     ; same colour as itself, but is not allowed to collide with versions of 
     ; itself which have already cemented
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    colour_cemented_piece: .dw 40, 48, 54, 14, 42, 36, 34 ; colours for pieces
+    colour_cemented_piece dw 40, 48, 54, 14, 42, 36, 34 ; colours for pieces
                                                         ; which have cemented
-    colour_falling_piece: .dw 39, 47, 55, 44, 6, 37, 33 ; colours for pieces
+    colour_falling_piece dw 39, 47, 55, 44, 6, 37, 33 ; colours for pieces
                                                       ; which are falling
     
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -92,34 +91,34 @@
     ;                            within a piece's four possible orientations
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     pieces_origin:
-    piece_t: .dw 1605, 1610, 1615, 3210 ; point down
-             .dw 10, 1610, 1615, 3210   ; point right
-             .dw 10, 1605, 1610, 1615   ; point up
-             .dw 10, 1605, 1610, 3210   ; point left
-    piece_j: .dw 1605, 1610, 1615, 3215 ; point down
-             .dw 10, 15, 1610, 3210     ; point right
-             .dw 5, 1605, 1610, 1615    ; point up
-             .dw 10, 1610, 3205, 3210   ; point left
-    piece_l: .dw 1605, 1610, 1615, 3205 ; point down
-             .dw 10, 1610, 3210, 3215   ; point right
-             .dw 15, 1605, 1610, 1615   ; point up
-             .dw 5, 10, 1610, 3210      ; point left
-    piece_z: .dw 1605, 1610, 3210, 3215 ; horizontal z
-             .dw 15, 1610, 1615, 3210   ; vertical z
-             .dw 1605, 1610, 3210, 3215 ; horizontal z
-             .dw 15, 1610, 1615, 3210   ; vertical z
-    piece_s: .dw 1610, 1615, 3205, 3210 ; horizontal s
-             .dw 10, 1610, 1615, 3215   ; vertical s
-             .dw 1610, 1615, 3205, 3210 ; horizontal s
-             .dw 10, 1610, 1615, 3215   ; vertical s
-    piece_square: .dw 1605, 1610, 3205, 3210 ; a square
-                  .dw 1605, 1610, 3205, 3210 ; another square
-                  .dw 1605, 1610, 3205, 3210 ; nothing but 
-                  .dw 1605, 1610, 3205, 3210 ; squares here
-    piece_line: .dw 1600, 1605, 1610, 1615 ; horizontal line
-                .dw 10, 1610, 3210, 4810   ; vertical line
-                .dw 1600, 1605, 1610, 1615 ; horizontal line
-                .dw 10, 1610, 3210, 4810   ; vertical line
+    piece_t dw 1605, 1610, 1615, 3210 ; point down
+             dw 10, 1610, 1615, 3210   ; point right
+             dw 10, 1605, 1610, 1615   ; point up
+             dw 10, 1605, 1610, 3210   ; point left
+    piece_j dw 1605, 1610, 1615, 3215 ; point down
+             dw 10, 15, 1610, 3210     ; point right
+             dw 5, 1605, 1610, 1615    ; point up
+             dw 10, 1610, 3205, 3210   ; point left
+    piece_l dw 1605, 1610, 1615, 3205 ; point down
+             dw 10, 1610, 3210, 3215   ; point right
+             dw 15, 1605, 1610, 1615   ; point up
+             dw 5, 10, 1610, 3210      ; point left
+    piece_z dw 1605, 1610, 3210, 3215 ; horizontal z
+             dw 15, 1610, 1615, 3210   ; vertical z
+             dw 1605, 1610, 3210, 3215 ; horizontal z
+             dw 15, 1610, 1615, 3210   ; vertical z
+    piece_s dw 1610, 1615, 3205, 3210 ; horizontal s
+             dw 10, 1610, 1615, 3215   ; vertical s
+             dw 1610, 1615, 3205, 3210 ; horizontal s
+             dw 10, 1610, 1615, 3215   ; vertical s
+    piece_square dw 1605, 1610, 3205, 3210 ; a square
+                  dw 1605, 1610, 3205, 3210 ; another square
+                  dw 1605, 1610, 3205, 3210 ; nothing but 
+                  dw 1605, 1610, 3205, 3210 ; squares here
+    piece_line dw 1600, 1605, 1610, 1615 ; horizontal line
+                dw 10, 1610, 3210, 4810   ; vertical line
+                dw 1600, 1605, 1610, 1615 ; horizontal line
+                dw 10, 1610, 3210, 4810   ; vertical line
     
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;
@@ -131,44 +130,44 @@
 ;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-    msg_score_buffer: .ascii "000$" ; holds the string representation of score
-    score: .dw 0 ; keeps score (representing total number of cleared lines)
+    msg_score_buffer db "000$" ; holds the string representation of score
+    score dw 0 ; keeps score (representing total number of cleared lines)
 
-    current_frame: .dw 0 ; our global frame counter
+    current_frame dw 0 ; our global frame counter
     
-    delay_stopping_point_centiseconds: .db 0 ; convenience variable used by the
+    delay_stopping_point_centiseconds db 0 ; convenience variable used by the
                                            ; delay subroutine
-    delay_initial: .db 0 ; another convenience variable used by the 
+    delay_initial db 0 ; another convenience variable used by the 
                        ; delay subroutine
     
-    random_number: .db 0 ; incremented by various events 
+    random_number db 0 ; incremented by various events 
                        ; such as input, clock polling, etc.
                        
-    must_quit: .db 0 ; flag indicating that the player is quitting the game
+    must_quit db 0 ; flag indicating that the player is quitting the game
     
-    cement_counter: .db 0 ; number of frames during which a piece which
+    cement_counter db 0 ; number of frames during which a piece which
                         ; can no longer fall is allowed to still be
                         ; controlled by the player
     
-    player_input_pressed: .db 0 ; flag indicating the presence of input
+    player_input_pressed db 0 ; flag indicating the presence of input
     
-    current_piece_colour_index: .dw 0 ; index of current colour in colours array
+    current_piece_colour_index dw 0 ; index of current colour in colours array
     
-    next_piece_colour_index: .dw 0 ; used to display next piece
-    next_piece_orientation_index: .dw 0 ; used to display next piece
+    next_piece_colour_index dw 0 ; used to display next piece
+    next_piece_orientation_index dw 0 ; used to display next piece
     
-    piece_definition: .dw 0 ; pointer to first of the group 
+    piece_definition dw 0 ; pointer to first of the group 
                           ; of four piece orientations for this piece
                           ; (see above for an explanation)
-    piece_orientation_index: .dw 0 ; 0 through 3, index of current orientation
+    piece_orientation_index dw 0 ; 0 through 3, index of current orientation
                                  ; among all of the piece's orientations
                                  ; (see above for an explanation)
                                  
-    piece_blocks: .dw 0, 0, 0, 0  ; stores positions of blocks of current piece 
+    piece_blocks dw 0, 0, 0, 0  ; stores positions of blocks of current piece 
     
-    piece_position: .dw 0    ; position of the top left corner 
+    piece_position dw 0    ; position of the top left corner 
                         ; of the falling 4 by 4 piece
-    piece_position_delta: .dw 0 ; frame-by-frame change in current piece position
+    piece_position_delta dw 0 ; frame-by-frame change in current piece position
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;
@@ -180,17 +179,17 @@
 initialization:
     
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ; enter graphics mode 0x13, 320x200 pixels 8bit colour
+    ; enter graphics mode 13h, 320x200 pixels 8bit colour
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov ax, 0x13 
-    int 0x10
+    mov ax, 13h 
+    int 10h
     
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; set keyboard parameters to be most responsive
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov ax, 0x0305
+    mov ax, 0305h
     xor bx, bx
-    int 0x16
+    int 16h
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; generate initial piece
@@ -321,9 +320,9 @@ display_next_piece:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; set colour in dl
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov bx, word [current_piece_colour_index]
+    mov word bx, [current_piece_colour_index]
     shl bx, 1
-    mov dl, byte [colour_falling_piece + bx]
+    mov byte dl, [colour_falling_piece + bx]
     call procedure_draw_piece
     
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -345,7 +344,7 @@ main_loop:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; advance frame
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov ax, word [current_frame]
+    mov word ax, [current_frame]
     inc ax
     mov word [current_frame], ax
 
@@ -431,7 +430,7 @@ handle_vertical_movement_loop_failure:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; we get here when the piece can no longer fall
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov al, byte [player_input_pressed]
+    mov byte al, [player_input_pressed]
     test al, al
     
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -448,7 +447,7 @@ handle_vertical_movement_loop_failure:
     ; if it did, then the piece landed a long enough time ago to be cemented
     ; in place
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov al, byte [cement_counter]
+    mov byte al, [cement_counter]
     dec al
     mov byte [cement_counter], al
     test al, al ; if we reached zero now, it means the piece can finally cement
@@ -474,9 +473,9 @@ handle_vertical_movement_cement_immediately:
     ; it cannot move down, so "cement it in place" by changing its colour
     ; by indexing in the cemented piece colours array
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov bx, word [current_piece_colour_index]
+    mov word bx, [current_piece_colour_index]
     shl bx, 1 ; each colour is a word, so offset by double the index
-    mov dl, byte [colour_cemented_piece + bx]
+    mov byte dl, [colour_cemented_piece + bx]
     call procedure_draw_piece
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -510,7 +509,7 @@ update_score:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; add number of cleared lines to the score
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov dx, word [score]
+    mov word dx, [score]
     add ax, dx
     
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -586,7 +585,7 @@ game_over_loop:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; advance frame, since we're still animating the logo
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov ax, word [current_frame]
+    mov word ax, [current_frame]
     inc ax
     mov word [current_frame], ax
     
@@ -594,15 +593,15 @@ game_over_loop:
     ; check whether any key is pressed
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     mov ah, 1
-    int 0x16 ; any key pressed ?
+    int 16h ; any key pressed ?
     jz game_over_loop ; no key pressed
     
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; read key
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     xor ah, ah
-    int 0x16
-    cmp al, 'q
+    int 16h
+    cmp al, 'q'
     jne game_over_loop ; wait for Q to be pressed to exit the program
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -616,7 +615,7 @@ done:
     ; change video mode to 80x25 text mode
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     mov ax, 3
-    int 0x10 ; restore text mode
+    int 10h ; restore text mode
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; return to the operating system
@@ -665,33 +664,33 @@ done:
 procedure_display_score:
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ; divide by 100 and convert to the character '0, '1, '2, ... , '9,
+    ; divide by 100 and convert to the character '0', '1', '2', ... , '9',
     ; storing it in the first position of our 3-digit string buffer
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov ax, word [score]
+    mov word ax, [score]
     mov dl, 100
     div dl ; hundreds in al, remainder in ah 
-    mov cl, '0
+    mov cl, '0'
     add cl, al
     mov byte [msg_score_buffer], cl ; set hundreds digit
     
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ; divide by 10 and convert to the character '0, '1, '2, ... , '9,
+    ; divide by 10 and convert to the character '0', '1', '2', ... , '9',
     ; storing it in the second position of our 3-digit string buffer
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     mov al, ah ; divide remainder again
     xor ah, ah
     mov dl, 10
     div dl ; tens in al, remainder in ah
-    mov cl, '0
+    mov cl, '0'
     add cl, al
     mov byte [msg_score_buffer + 1], cl ; set tens digit
     
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    ; convert remainder to the character '0, '1, '2, ... , '9,
+    ; convert remainder to the character '0', '1', '2', ... , '9',
     ; storing it in the third position of our 3-digit string buffer
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov cl, '0
+    mov cl, '0'
     add cl, ah
     mov byte [msg_score_buffer + 2], cl ; set units digit
     
@@ -724,14 +723,14 @@ procedure_print_at:
     push bx
     mov ah, 2
     xor bh, bh
-    int 0x10
+    int 10h
     
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; output string
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     mov ah, 9
     pop dx
-    int 0x21
+    int 21h
     
     ret
     
@@ -854,7 +853,7 @@ attempt_line_removal_shift_lines_down_loop:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     push ds
     push es
-    mov ax, 0xA000 ; we'll be reading and writing within the video segment
+    mov ax, 0A000h ; we'll be reading and writing within the video segment
     mov ds, ax ; so source segment will be this segment as well
     mov es, ax ; and so will the destination segment
     rep movsb
@@ -1058,9 +1057,9 @@ procedure_apply_delta_and_draw_piece:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; draw new piece
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov bx, word [current_piece_colour_index]
+    mov word bx, [current_piece_colour_index]
     shl bx, 1 ; two bytes per colour
-    mov dl, byte [colour_falling_piece + bx]
+    mov byte dl, [colour_falling_piece + bx]
     call procedure_draw_piece
 
     ret
@@ -1223,7 +1222,7 @@ procedure_advance_orientation:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; advance index within [0, 3], cycling back to 0 from 3
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov ax, word [piece_orientation_index]
+    mov word ax, [piece_orientation_index]
     inc ax
     and ax, 3 ; ax := (ax + 1) mod 4
     mov word [piece_orientation_index], ax
@@ -1247,7 +1246,7 @@ procedure_read_character:
     ; check if any key is pressed
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     mov ah, 1
-    int 0x16 ; any keys pressed?
+    int 16h ; any keys pressed?
     jnz read_character_key_was_pressed ; yes
     
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1257,48 +1256,48 @@ procedure_read_character:
 
 read_character_key_was_pressed:
 
-    ; ALTERNATIVELY, read via 0x60
-    ; in al, 0x60
+    ; ALTERNATIVELY, read via 60h
+    ; in al, 60h
     ; and change SCAN CODES matching
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; read key from buffer
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     mov ah, 0
-    int 0x16
+    int 16h
     
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; clear keyboard buffer
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     push ax    
     mov ah, 6 ; direct console I/O
-    mov dl, 0xFF ; input mode
-    int 0x21 
+    mov dl, 0FFh ; input mode
+    int 21h 
     pop ax
 
 handle_input:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; check whether right was pressed
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    cmp al, 's
+    cmp al, 's'
     je move_right
     
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; check whether left was pressed
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    cmp al, 'a
+    cmp al, 'a'
     je move_left
     
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; check whether rotate was pressed
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    cmp al, ' 
+    cmp al, ' '
     je rotate
     
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; check whether quit was pressed
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    cmp al, 'q
+    cmp al, 'q'
     je quit    
     
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1632,9 +1631,9 @@ is_line_available_obstacle_found:
     ; not available
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     push bx
-    mov bx, word [current_piece_colour_index]
+    mov word bx, [current_piece_colour_index]
     shl bx, 1 ; two bytes per colour
-    mov al, byte [colour_falling_piece + bx]
+    mov byte al, [colour_falling_piece + bx]
     cmp dl, al ; if obstacle is a falling block, treat it as a non-obstacle
     pop bx
     jne is_line_available_failure
@@ -1679,13 +1678,13 @@ procedure_delay:
     ; read current system time
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     xor bl, bl
-    mov ah, 0x2C
-    int 0x21
+    mov ah, 2Ch
+    int 21h
     
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; advance random number
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov al, byte [random_number]
+    mov byte al, [random_number]
     add al, dl
     mov byte [random_number], al
     
@@ -1718,7 +1717,7 @@ read_time_again:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; read system time again
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    int 0x21
+    int 21h
     
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; if we have to stop within the same second, ensure we're still within the
@@ -1935,7 +1934,7 @@ procedure_draw_pixel:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; set A000:di to the specified colour
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov ax, 0xA000
+    mov ax, 0A000h
     mov es, ax
     mov byte [es:di], dl
     
@@ -1963,9 +1962,9 @@ procedure_read_pixel:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; read byte at A000:di
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov ax, 0xA000
+    mov ax, 0A000h
     mov es, ax
-    mov dl, byte [es:di]
+    mov byte dl, [es:di]
     
     pop es
     pop ax
@@ -2169,7 +2168,7 @@ procedure_display_logo:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; redraw animated logo only once every four frames
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov ax, word [current_frame]
+    mov word ax, [current_frame]
     and ax, 3 ; ax := ax mod 4
     jz display_logo_begin
     
@@ -2189,7 +2188,7 @@ display_logo_horizontal_loop:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; oscillate ax between 0 and 1 every 8 frames
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov ax, word [current_frame]    
+    mov word ax, [current_frame]    
     and ax, 8
     shr ax, 3
     
@@ -2249,7 +2248,7 @@ display_logo_vertical_loop:
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ; oscillate ax between 0 and 1 every 8 frames, and save the binary value
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-    mov ax, word [current_frame]    
+    mov word ax, [current_frame]    
     and ax, 8
     shr ax, 3
     push ax
